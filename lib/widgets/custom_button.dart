@@ -4,7 +4,9 @@ class CustomButton extends StatelessWidget {
   final String text;
   final bool isHome;
   final VoidCallback onTap; // using function instead of voidcallback won't work for us bcox with that u will be calling the fn and not storing the address of fun
-  const CustomButton({super.key, required this.text, required this.isHome, required this.onTap});
+  const CustomButton({super.key, required this.text, 
+   this.isHome = false,
+    required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +19,7 @@ class CustomButton extends StatelessWidget {
        ),),
        style: ElevatedButton.styleFrom(
         minimumSize: Size ( !isHome ?  width : width/4, 50),
+        backgroundColor: Colors.blue
        ),
       );
   }

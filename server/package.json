@@ -1,0 +1,23 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./index.js",
+    "dev" : "nodemon ./index.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "express": "^4.21.1",
+    "http": "^0.0.1-security",
+    "mongoose": "^8.8.1",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "codemon": "^0.1.31-development",
+    "nodemon" : "^3.1.7"
+  }
+}

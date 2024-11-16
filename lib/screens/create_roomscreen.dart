@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:type_racer/utils/socket_client.dart';
 import 'package:type_racer/widgets/custom_button.dart';
 import 'package:type_racer/widgets/custom_textfield.dart';
 
@@ -11,12 +12,18 @@ class CreateRoomScreen extends StatefulWidget {
 
 class _CreateRoomScreenState extends State<CreateRoomScreen> {
   final TextEditingController _nameController = TextEditingController();
+  final SocketClient _socketClient = SocketClient.instance;
+
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _nameController.dispose();
   }
+
+  testing(){
+    _socketClient.socket!.emit('test', 'this is working');
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -37,7 +44,9 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                 CustomTextField(controller: _nameController, 
                 hintText: 'Enter your nickname'),
                 const SizedBox(height: 30,), 
-                CustomButton(text: 'Create',  onTap: (){})
+                CustomButton(
+                  text: 'Create',  
+                  onTap: testing)
               ],
             ),
           ),

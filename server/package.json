@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./index.js",
-    "dev" : "nodemon ./index.js"
+    "dev": "nodemon ./index.js"
   },
   "author": "",
   "license": "ISC",
@@ -14,10 +14,10 @@
     "express": "^4.21.1",
     "http": "^0.0.1-security",
     "mongoose": "^8.8.1",
-    "socket.io": "^2.3.0"
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "codemon": "^0.1.31-development",
-    "nodemon" : "^3.1.7"
+    "nodemon": "^3.1.7"
   }
 }

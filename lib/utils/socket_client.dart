@@ -9,8 +9,24 @@ class SocketClient{
       'transports' : ["websocket"],
       'autoConnect' : false,
     });
-    socket!.connect();
+
+      socket!.onConnect((_) {
+      print("Connected to server: ${socket!.id}");
+    });
+
+
+socket!.onConnectError((error) {
+      print("Connection error: $error");
+    });
+
+     socket!.onDisconnect((_) {
+      print("Disconnected from server");
+    });
+
+ socket!.connect();
   }
+
+ 
 
   static SocketClient get instance{
      

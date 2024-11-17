@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:type_racer/utils/socket_client.dart';
+import 'package:type_racer/utils/socket_method.dart';
 import 'package:type_racer/widgets/custom_button.dart';
 import 'package:type_racer/widgets/custom_textfield.dart';
 
@@ -12,7 +13,7 @@ class CreateRoomScreen extends StatefulWidget {
 
 class _CreateRoomScreenState extends State<CreateRoomScreen> {
   final TextEditingController _nameController = TextEditingController();
-  final SocketClient _socketClient = SocketClient.instance;
+  final SocketMethods _socketMethods = SocketMethods();
 
   @override
   void dispose() {
@@ -20,9 +21,6 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
     _nameController.dispose();
   }
 
-  testing(){
-    _socketClient.socket!.emit('test', 'this is working');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +44,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
                 const SizedBox(height: 30,), 
                 CustomButton(
                   text: 'Create',  
-                  onTap: testing)
+                  onTap: () => _socketMethods.createGame(_nameController.text))
               ],
             ),
           ),

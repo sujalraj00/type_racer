@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:type_racer/providers/client_state_provider.dart';
+import 'package:type_racer/providers/game_state_provider.dart';
 import 'package:type_racer/screens/create_roomscreen.dart';
+import 'package:type_racer/screens/game_screen.dart';
 import 'package:type_racer/screens/home_screen.dart';
 import 'package:type_racer/screens/join_room_screen.dart';
 
@@ -13,16 +17,23 @@ class MyApp extends StatelessWidget {
   // This widget is the root of  application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Type Racer',
-      theme: ThemeData(
-   primarySwatch: Colors.blue      ),
-      initialRoute: '/',
-      routes: {
-        '/' : (context) => const HomeScreen(),
-        '/create-room' :(context) =>const CreateRoomScreen(),
-        '/join-room' :(context) =>const JoinRoomScreen()
-      },
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => GameStateProvider()),
+        ChangeNotifierProvider(create: (context) => ClientStateProvider())
+      ],
+      child: MaterialApp(
+        title: 'Type Racer',
+        theme: ThemeData(
+         primarySwatch: Colors.blue      ),
+        initialRoute: '/',
+        routes: {
+          '/' : (context) => const HomeScreen(),
+          '/create-room' :(context) =>const CreateRoomScreen(),
+          '/join-room' :(context) =>const JoinRoomScreen(),
+          '/game-screen' :(context) => const GameScreen()
+        },
+      ),
     );
   }
 }

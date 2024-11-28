@@ -35,7 +35,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
     return Scaffold(
       body: Center(
         child: ConstrainedBox(
-          constraints: BoxConstraints(
+          constraints: const BoxConstraints(
             maxWidth: 600
           ),
           child: Container(
@@ -44,7 +44,7 @@ class _CreateRoomScreenState extends State<CreateRoomScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Create Room', style: TextStyle(fontSize: 30),),
+                const Text('Create Room', style: TextStyle(fontSize: 30),),
                 SizedBox(height: size.height*0.08,),
                 CustomTextField(controller: _nameController, 
                 hintText: 'Enter your nickname'),

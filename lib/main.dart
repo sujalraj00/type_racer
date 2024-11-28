@@ -22,7 +22,8 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => GameStateProvider()),
         ChangeNotifierProvider(create: (context) => ClientStateProvider())
       ],
-      child: MaterialApp(
+      child: MaterialApp( 
+        debugShowCheckedModeBanner: false,
         title: 'Type Racer',
         theme: ThemeData(
          primarySwatch: Colors.blue      ),

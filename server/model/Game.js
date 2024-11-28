@@ -18,8 +18,13 @@ const gameSchema = new mongoose.Schema({
     },
     startTime : {
         type: Number
-    }
-});
+    },
+
+    shortCode: {
+            type: String,
+
+        }
+     } );
 
 const gameModel = mongoose.model("Game", gameSchema);
 

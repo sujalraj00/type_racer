@@ -20,25 +20,34 @@ class SocketMethods {
   }
   
 // join game
-joinGame(String gameId ,String nickname){
-    if (nickname.isNotEmpty && gameId.isNotEmpty) {
+joinGame(String shortCode ,String nickname){
+    if (nickname.isNotEmpty && shortCode.isNotEmpty) {
       _socketClient.emit("join-game", {
         'nickname' : nickname,
-        'gameId' : gameId
+        'gameId' : shortCode
               });
     }
+  }
+
+    sendUserInput(String value, String gameID) {
+    _socketClient.emit('userInput', {
+      'userInput': value,
+      'gameID': gameID,
+    });
   }
 
 // listeners
   updateGameListener(BuildContext context){
     _socketClient.on('updateGame', (data) {
+        print('Received game update data: $data'); // Add this line to debug
       final gameStateProvider = 
       Provider.of<GameStateProvider>(context,listen: false).updateGameState(
         id: data['_id'], 
         players: data['players'], 
         isJoin: data['isJoin'], 
         isOver: data['isOver'], 
-        words: data['words']
+        words: data['words'],
+        shortCode: data['shortCode'] ?? ''
         );
 
 
@@ -71,6 +80,26 @@ joinGame(String gameId ,String nickname){
     _socketClient.on('timer', (data) {
       clientStateProvider.setClientState(data);
     });
+  }
+
+    updateGame(BuildContext context) {
+    _socketClient.on('updateGame', (data) {
+      final gameStateProvider =
+          Provider.of<GameStateProvider>(context, listen: false)
+              .updateGameState(
+        id: data['_id'],
+        players: data['players'],
+        isJoin: data['isJoin'],
+        words: data['words'],
+        isOver: data['isOver'],
+        shortCode: data['shortCode']
+      );
+    });
+  }
+
+
+  gameFinishedListener() {
+    _socketClient.on('done', (data) => _socketClient.off('timer'));
   }
   
 }

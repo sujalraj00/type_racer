@@ -3,33 +3,32 @@ import 'package:provider/provider.dart';
 import 'package:type_racer/providers/client_state_provider.dart';
 import 'package:type_racer/providers/game_state_provider.dart';
 import 'package:type_racer/utils/socket_client.dart';
+import 'package:type_racer/widgets/qr_code_dialog.dart';
 
 class SocketMethods {
   final _socketClient = SocketClient.instance.socket!;
   bool _isPlaying = false;
 
   //create game
-  createGame(String nickname){
+  createGame(String nickname) {
     if (nickname.isNotEmpty) {
       _socketClient.emit("create-game", {
-        'nickname' : nickname,
-              });
-    }else {
-    print('Nickname is empty, not emitting.');
-  }
-  }
-  
-// join game
-joinGame(String shortCode ,String nickname){
-    if (nickname.isNotEmpty && shortCode.isNotEmpty) {
-      _socketClient.emit("join-game", {
-        'nickname' : nickname,
-        'gameId' : shortCode
-              });
+        'nickname': nickname,
+      });
+    } else {
+      print('Nickname is empty, not emitting.');
     }
   }
 
-    sendUserInput(String value, String gameID) {
+// join game
+  joinGame(String shortCode, String nickname) {
+    if (nickname.isNotEmpty && shortCode.isNotEmpty) {
+      _socketClient
+          .emit("join-game", {'nickname': nickname, 'shortCode': shortCode});
+    }
+  }
+
+  sendUserInput(String value, String gameID) {
     _socketClient.emit('userInput', {
       'userInput': value,
       'gameID': gameID,
@@ -37,69 +36,77 @@ joinGame(String shortCode ,String nickname){
   }
 
 // listeners
-  updateGameListener(BuildContext context){
+  updateGameListener(BuildContext context) {
     _socketClient.on('updateGame', (data) {
-        print('Received game update data: $data'); // Add this line to debug
-      final gameStateProvider = 
-      Provider.of<GameStateProvider>(context,listen: false).updateGameState(
-        id: data['_id'], 
-        players: data['players'], 
-        isJoin: data['isJoin'], 
-        isOver: data['isOver'], 
-        words: data['words'],
-        shortCode: data['shortCode'] ?? ''
+      print('Received game update data: $data'); // Add this line to debug
+      final gameStateProvider =
+          Provider.of<GameStateProvider>(context, listen: false)
+              .updateGameState(
+                  id: data['_id'],
+                  players: data['players'],
+                  isJoin: data['isJoin'],
+                  isOver: data['isOver'],
+                  words: data['words'],
+                  shortCode: data['shortCode'] ?? '');
+
+      if (data['isHost'] == true) {
+        showDialog(
+          context: context,
+          builder: (context) => QrCodeDialog(
+            shortCode: data['shortCode'] ?? '',
+            siteUrl:
+                'https://yourwebsite.com', // Replace with your actual site URL
+          ),
         );
+      }
 
-
-       if (data['_id'].isNotEmpty && !_isPlaying) {
-         Navigator.pushNamed(context, '/game-screen');
-         _isPlaying = true;
-       }
-
+      if (data['_id'].isNotEmpty && !_isPlaying) {
+        Navigator.pushNamed(context, '/game-screen');
+        _isPlaying = true;
+      }
     });
   }
 
-  startTimer(playerId, gameID){
-    _socketClient.emit(
-      'timer',
-      {
-        'playerId' : playerId,
-        'gameID' : gameID
-      }
+  startTimer(playerId, gameID, shortCode) {
+    _socketClient.emit('timer',
+        {'playerId': playerId, 'gameID': gameID, 'shortCode': shortCode});
+  }
+
+  notCorrectGameListener(BuildContext context) {
+    _socketClient.on(
+      "notCorrectGame",
+      (data) => ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(data),
+        ),
+      ),
     );
   }
 
-  notCorrectGameListener(BuildContext context){
-    _socketClient.on("notCorrectGame", (data) => 
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(data),),),);
-      }
-
-  updateTimer(BuildContext context){
-    final clientStateProvider = 
-    Provider.of<ClientStateProvider>(context, listen:  false);
+  updateTimer(BuildContext context) {
+    final clientStateProvider =
+        Provider.of<ClientStateProvider>(context, listen: false);
     _socketClient.on('timer', (data) {
+      print("Received timer update: $data");
       clientStateProvider.setClientState(data);
     });
   }
 
-    updateGame(BuildContext context) {
+  updateGame(BuildContext context) {
     _socketClient.on('updateGame', (data) {
       final gameStateProvider =
           Provider.of<GameStateProvider>(context, listen: false)
               .updateGameState(
-        id: data['_id'],
-        players: data['players'],
-        isJoin: data['isJoin'],
-        words: data['words'],
-        isOver: data['isOver'],
-        shortCode: data['shortCode']
-      );
+                  id: data['_id'],
+                  players: data['players'],
+                  isJoin: data['isJoin'],
+                  words: data['words'],
+                  isOver: data['isOver'],
+                  shortCode: data['shortCode']);
     });
   }
-
 
   gameFinishedListener() {
     _socketClient.on('done', (data) => _socketClient.off('timer'));
   }
-  
 }

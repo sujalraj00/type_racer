@@ -49,7 +49,7 @@ class _GameTextFieldState extends State<GameTextField> {
   }
 
   handleStart(GameStateProvider game) {
-    _socketMethods.startTimer(playerMe['_id'], game.gameState['id']);
+    _socketMethods.startTimer(playerMe['_id'], game.gameState['id'], game.gameState['shortCode']);
     setState(() {
       isBtn = false;
     });

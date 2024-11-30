@@ -94,8 +94,7 @@ console.log("Final Game Object before save:", game);
                         });
 
 
-            io.to(gameId).emit("updateGame", game);
-
+            io.to(gameId).emit("updateGame", game);            
 
             console.log('exiting try block');
         } catch (error) {
@@ -103,7 +102,7 @@ console.log("Final Game Object before save:", game);
         }
     });
 
-    socket.on("join-game", async ({nickname, gameId}) => {
+    socket.on("join-game", async ({nickname, shortCode}) => {
         try {
 //            if (!gameId.match(/^[0-9a-fA-F]{24}$/)) {
 //                socket.emit("notCorrectGame", "Please enter a valid game ID");
@@ -112,7 +111,7 @@ console.log("Final Game Object before save:", game);
 //            }
 
              // Find game by short code instead of ID
-             let game = await Game.findOne({ shortCode: gameId});
+             let game = await Game.findOne({ shortCode: shortCode});
              if (!game) {
                 socket.emit("notCorrectGame", "Game not found. Check the code and try again.");
                 return;
@@ -171,92 +170,79 @@ console.log("Final Game Object before save:", game);
       });
 
     // timer listener
-socket.on("timer", async ({playerId, gameID}) =>{
+  socket.on("timer", async ({ playerId, gameID , shortCode}) => {
     let countDown = 5;
-    console.log("Timer started with:", { playerId, gameID });
-    if (!gameID || !gameID.match(/^[0-9a-fA-F]{24}$/)) {
-        console.error("Invalid or missing gameID:", gameID);
-        socket.emit("error", "Invalid game ID provided.");
-        return;
-    }   
-    console.log("Game ID provided:", gameID);
-    console.log("timer started");
-    let game = await Game.findById(gameID); 
-   
-    console.log("Game object fetched:", game);
+    let game = await Game.findById(gameID);
     let player = game.players.id(playerId);
-    if (!player) {
-        socket.emit("error", "Player not found in the game.");
-        return;
-    }
-    
+
     if (player.isPartyLeader) {
-        let timerId = setInterval( async () => {
-            if(countDown >=0) {
-                io.to(gameID).emit("timer", {
-                    countDown,
-                    msg: "Game Starting"
-                });
-                console.log(countDown);
-                countDown --;
-            } else{
-                game.isJoin = false;
-                game = await game.save();
-                io.to(gameID).emit("updateGame", game);
-                startGameClock(gameID)
-                clearInterval(timerId);
-            }
-        }, 1000);
+      let timerId = setInterval(async () => {
+        if (countDown >= 0) {
+          io.to(gameID).emit("timer", {
+            countDown,
+            msg: "Game Starting",
+          });
+          console.log(countDown);
+          countDown--;
+        } else {
+          game.isJoin = false;
+          game = await game.save();
+          io.to(gameID).emit("updateGame", game);
+          startGameClock(gameID);
+          clearInterval(timerId);
+        }
+      }, 1000);
     }
- });
+  });
 });
 
-
 const startGameClock = async (gameID) => {
-    let game = await Game.findById(gameID);
-    game.startTime =  new Date().getTime();
-    game = await game.save();
+  let game = await Game.findById(gameID);
+  game.startTime = new Date().getTime();
+  game = await game.save();
 
-    let time = 120;
+  let time = 120;
 
-    let timerId = setInterval((function gameIntervalFunc() {
-        if (time >= 0) {
-            const timeFormat = calculateTime(time);
-            io.to(gameID).emit("timer", {
-                countDown: timeFormat,
-                msg: "Time Remaining"
-            })
-            console.log(time);
-            time --;
-        }
-        else{
-            (async () => {
-                try{
-                    let endTime = new Date().getTime();
-                    let game = await Game.findById(gameID);
-                    let {startTime} = game;
-                    game.isOver = true;
-                    game.players.forEach((player, index) => {
-                        if (player.WPM === -1) {
-                            game.players[index].WPM = calculateWPM(endTime, startTime, player);
-                        }
-                    })
-                    game = await game.save();
-                    io.to(gameID).emit("updateGame", game);
-
-                    clearInterval(timerId);
-                } catch (e){
-                    console.log(e);
-                }
-            })();
-
-
-            
-        }
-        return gameIntervalFunc;
+  let timerId = setInterval(
+    (function gameIntervalFunc() {
+      if (time >= 0) {
+        const timeFormat = calculateTime(time);
+        io.to(gameID).emit("timer", {
+          countDown: timeFormat,
+          msg: "Time Remaining",
+        });
+        console.log(time);
+        time--;
+      } else {
+        (async () => {
+          try {
+            let endTime = new Date().getTime();
+            let game = await Game.findById(gameID);
+            let { startTime } = game;
+            game.isOver = true;
+            game.players.forEach((player, index) => {
+              if (player.WPM === -1) {
+                game.players[index].WPM = calculateWPM(
+                  endTime,
+                  startTime,
+                  player
+                );
+              }
+            });
+            game = await game.save();
+            io.to(gameID).emit("updateGame", game);
+            clearInterval(timerId);
+          } catch (e) {
+            console.log(e);
+          }
+        })();
+      }
+      return gameIntervalFunc;
     })(),
-    1000);
-  }
+    1000
+  );
+};
+
 
   const calculateTime = (time) => {
     let min = Math.floor(time / 60);

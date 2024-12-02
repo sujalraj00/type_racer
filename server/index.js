@@ -5,7 +5,8 @@ const http = require("http");
 const Game = require('./model/Game');
 const getSentence = require("./api/getSentence");
 require('dotenv').config(); 
-
+//const deleteOldFinishedGames = require('./utils/game_cleanup');
+   
 //const exp = require("constants");
 
 
@@ -258,8 +259,28 @@ const startGameClock = async (gameID) => {
     return WPM;
   }
 
+  const deleteOldFinishedGames = async ()  => {
+    try {
+        const oneHrAgo = Date.now() - (60*60*1000);
+        const result = await Game.deleteMany(
+            {
+                isOver : true,
+                startTime : {$lt: oneHrAgo}
+            }
+        );
+
+        console.log(`Deleted ${result.deletedCount} finished games older than one hour`);
+    } catch (error) {
+        console.error('Error deleting old finished games:', error); 
+    }
+};
+
+
 mongoose.connect(DB).then(() => {
     console.log("connection successful!");
+
+     // Start periodic cleanup
+     setInterval(deleteOldFinishedGames, 60 * 60 * 1000); // Runs every hour
 }).catch((e) => {
     console.log(e);
 

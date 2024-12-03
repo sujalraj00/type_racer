@@ -28,59 +28,7 @@ class _GameScreenState extends State<GameScreen> {
     _socketMethods.gameFinishedListener();
   }
 
-  // Method to show QR code dialog
-  void _showQRCodeDialog(
-      BuildContext context, String shortCode, String siteUrl) {
-    final qrData = "www.google.com";
 
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Game Invitation'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // QR Code Generation
-            QrImageView(
-              data: qrData,
-              version: QrVersions.auto,
-              size: 200.0,
-              // Optional: Customize QR code appearance
-            ),
-            const SizedBox(height: 16),
-
-            // Display Short Code
-            Text(
-              'Game Code: $shortCode',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Copy Code Button
-            ElevatedButton.icon(
-              onPressed: () {
-                Clipboard.setData(ClipboardData(text: shortCode));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Code Copied to Clipboard')),
-                );
-              },
-              icon: const Icon(Icons.copy),
-              label: const Text('Copy Code'),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Close'),
-          ),
-        ],
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -152,7 +100,7 @@ class _GameScreenState extends State<GameScreen> {
                                       width: 130,
                                       child: QrImageView(
                                         data:
-                                            'www.google.com', // custom link of data
+                                            'https://type-racer-woad.vercel.app/join/${game.gameState['shortCode']}', // custom link of data
                                         version: QrVersions.auto,
                                         size: 150.0,
                                       ),

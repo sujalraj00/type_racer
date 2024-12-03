@@ -4,7 +4,8 @@ import 'package:type_racer/widgets/custom_button.dart';
 import 'package:type_racer/widgets/custom_textfield.dart';
 
 class JoinRoomScreen extends StatefulWidget {
-  const JoinRoomScreen({super.key});
+   final String? initialGameId;
+  const JoinRoomScreen({super.key, this.initialGameId});
 
   @override
   State<JoinRoomScreen> createState() => _JoinRoomScreenState();
@@ -12,20 +13,20 @@ class JoinRoomScreen extends StatefulWidget {
 
 class _JoinRoomScreenState extends State<JoinRoomScreen> {
   final _nameController = TextEditingController();
-  final _gameIdController = TextEditingController();
+ late final TextEditingController _gameIdController;
   final _socketMethods = SocketMethods();
 
   @override
   void initState() {
   
     super.initState();
+    _gameIdController = TextEditingController(text: widget.initialGameId ?? '');
     _socketMethods.updateGameListener(context);
     _socketMethods.notCorrectGameListener(context);
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _nameController.dispose();
     _gameIdController.dispose();

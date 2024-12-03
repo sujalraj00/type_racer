@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:type_racer/providers/client_state_provider.dart';
 import 'package:type_racer/providers/game_state_provider.dart';
 import 'package:type_racer/utils/socket_client.dart';
-import 'package:type_racer/widgets/qr_code_dialog.dart';
+
 
 class SocketMethods {
   final _socketClient = SocketClient.instance.socket!;
@@ -49,16 +49,16 @@ class SocketMethods {
                   words: data['words'],
                   shortCode: data['shortCode'] ?? '');
 
-      if (data['isHost'] == true) {
-        showDialog(
-          context: context,
-          builder: (context) => QrCodeDialog(
-            shortCode: data['shortCode'] ?? '',
-            siteUrl:
-                'https://yourwebsite.com', // Replace with your actual site URL
-          ),
-        );
-      }
+      // if (data['isHost'] == true) {
+      //   showDialog(
+      //     context: context,
+      //     builder: (context) => QrCodeDialog(
+      //       shortCode: data['shortCode'] ?? '',
+      //       siteUrl:
+      //           'https://yourwebsite.com', // Replace with your actual site URL
+      //     ),
+      //   );
+      // }
 
       if (data['_id'].isNotEmpty && !_isPlaying) {
         Navigator.pushNamed(context, '/game-screen');

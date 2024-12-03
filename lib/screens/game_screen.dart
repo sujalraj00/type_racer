@@ -7,7 +7,6 @@ import 'package:type_racer/providers/client_state_provider.dart';
 import 'package:type_racer/providers/game_state_provider.dart';
 import 'package:type_racer/utils/socket_method.dart';
 import 'package:type_racer/widgets/game_text_field.dart';
-import 'package:type_racer/widgets/qr_code_dialog.dart';
 import 'package:type_racer/widgets/sentence_game.dart';
 
 class GameScreen extends StatefulWidget {
@@ -100,7 +99,7 @@ class _GameScreenState extends State<GameScreen> {
                                       width: 130,
                                       child: QrImageView(
                                         data:
-                                            'https://type-racer-ivory.vercel.app/join/${game.gameState['shortCode']}', // custom link of data
+                                            'https://type-racer-ivory.vercel.app/join/${game.gameState['shortCode']}', 
                                         version: QrVersions.auto,
                                         size: 150.0,
                                       ),

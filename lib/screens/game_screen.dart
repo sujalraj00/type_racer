@@ -106,7 +106,7 @@ class _GameScreenState extends State<GameScreen> {
             ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 600),
               child: SizedBox(
-                height: 300,
+                height: 350,
                 child: ListView.builder(
                     shrinkWrap: true,
                     itemCount: game.gameState['players'].length ?? 0,

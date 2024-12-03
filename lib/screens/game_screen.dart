@@ -100,7 +100,7 @@ class _GameScreenState extends State<GameScreen> {
                                       width: 130,
                                       child: QrImageView(
                                         data:
-                                            'https://type-racer-woad.vercel.app/join/${game.gameState['shortCode']}', // custom link of data
+                                            'www.github.com', // custom link of data
                                         version: QrVersions.auto,
                                         size: 150.0,
                                       ),

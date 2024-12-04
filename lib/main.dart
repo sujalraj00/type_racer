@@ -47,9 +47,9 @@ void handleInitialLink(String link) {
 }
 }
 
-void main() async {
+void main()  {
   WidgetsFlutterBinding.ensureInitialized();
-  await setupDeepLinks();
+  setupDeepLinks();
   runApp(const MyApp());
 }
 

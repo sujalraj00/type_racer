@@ -14,9 +14,9 @@ import 'package:flutter/services.dart' show PlatformException;
 // Global navigator key
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-void setupDeepLinks() async {
+Future<void> setupDeepLinks() async {
   try {
-    String? initialLink = await getInitialLink();
+    String? initialLink = await getInitialLink(); // This returns a Future
     if (initialLink != null) {
       handleInitialLink(initialLink);
     }
@@ -30,26 +30,26 @@ void setupDeepLinks() async {
     });
   } on PlatformException {
     // Handle exception
+    print('Failed to get deep link');
   }
 }
+
 
 void handleInitialLink(String link) {
   Uri uri = Uri.parse(link);
-  if (uri.pathSegments.isNotEmpty) {
-    final shortCode = uri.pathSegments.last;
-    
-    // Navigate to Join Room screen with pre-filled game ID
-    navigatorKey.currentState?.pushReplacement(
-      MaterialPageRoute(
-        builder: (context) => JoinRoomScreen(initialGameId: shortCode)
-      )
-    );
-  }
+  if (uri.pathSegments.length > 1 && uri.pathSegments[0] == 'join') {
+  final shortCode = uri.pathSegments[1];
+  navigatorKey.currentState?.pushReplacement(
+    MaterialPageRoute(
+      builder: (context) => JoinRoomScreen(initialGameId: shortCode),
+    ),
+  );
+}
 }
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupDeepLinks();
+  await setupDeepLinks();
   runApp(const MyApp());
 }
 

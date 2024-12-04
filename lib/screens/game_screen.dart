@@ -99,7 +99,7 @@ class _GameScreenState extends State<GameScreen> {
                                       width: 150,
                                       child: QrImageView(
                                         data:
-                                            'www.google.com', 
+                                            '', 
                                         version: QrVersions.auto,
                                         size: 150.0,
                                       ),

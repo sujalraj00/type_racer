@@ -96,10 +96,10 @@ class _GameScreenState extends State<GameScreen> {
                                   children: [
                                     SizedBox(
                                       height: 150,
-                                      width: 130,
+                                      width: 150,
                                       child: QrImageView(
                                         data:
-                                            "https://type-racer-ivory.vercel.app/join/${game.gameState['shortCode']}", 
+                                            'https://type-racer-ivory.vercel.app/join/${game.gameState['shortCode']}', 
                                         version: QrVersions.auto,
                                         size: 150.0,
                                       ),

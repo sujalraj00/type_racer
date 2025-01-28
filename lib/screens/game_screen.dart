@@ -27,8 +27,6 @@ class _GameScreenState extends State<GameScreen> {
     _socketMethods.gameFinishedListener();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     final game = Provider.of<GameStateProvider>(context);
@@ -99,13 +97,12 @@ class _GameScreenState extends State<GameScreen> {
                                       width: 150,
                                       child: QrImageView(
                                         data:
-                                             'https://type-racer-mauve.vercel.app/join/${game.gameState['shortCode']}', 
+                                            'https://type-racer-tan.vercel.app/join/${game.gameState['shortCode']}',
                                         version: QrVersions.auto,
                                         size: 150.0,
                                       ),
                                     ),
                                     const SizedBox(height: 10),
-                                    
                                     OutlinedButton.icon(
                                         onPressed: () {
                                           Clipboard.setData(ClipboardData(
@@ -119,7 +116,8 @@ class _GameScreenState extends State<GameScreen> {
                                           );
                                         },
                                         icon: const Icon(Icons.copy),
-                                        label: Text("${game.gameState['shortCode']}"))
+                                        label: Text(
+                                            "${game.gameState['shortCode']}"))
                                   ],
                                 ),
                               ),
